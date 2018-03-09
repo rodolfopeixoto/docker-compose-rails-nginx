@@ -194,8 +194,10 @@ Documentação
 
 Caso, você deseje iniciar um projeto do zero, basta seguir os passos abaixo:
 
-1 - Clone o repositório
+1 - Clone o repositório.
+
 2 - Renomee o rails-app-name para o nome que você deseja para a sua aplicação.
+
 3 - Agora vamos construir um container para gerarmos os arquivos. Onde está rails-app-name, você deve trocar para o nome que você renomeou.
 
 ```
