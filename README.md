@@ -1,4 +1,4 @@
-# DOCKER RAILS NGINX  AND POSTGRESQL CONTAINERIZED
+# DOCKER RAILS, NGINX  AND POSTGRESQL
 
 Hoje vivemos o mundo dos containers, desenvolvi esses files para que possa rapidamente levantar um ambiente tanto de desenvolvimento,
 quanto de produção para utilização imediata. O app utiliza **nginx**, **postgresql** e o app rails, onde o nginx já está utilizando o loand balance para que você tenha requisiçes
@@ -32,7 +32,33 @@ RAILS_SECRET_KEY_BASE=
 DEVISE_SECRET_KEY=
 ```
 
-3 - Mudar o nome das pastas no arquivo docker-compose.yml, [ pasta com o nome da sua aplicação ]/docker/nginx.dockerfile por exemplo:
+3 - Modificar o arquivo config/database.yml
+
+
+Você precisa agora configura o **config/database.yml**
+
+
+```yml
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  database: app_database
+  host: postgresql
+  user: <%= ENV['POSTGRES_USER'] %>
+  password: <%= ENV['POSTGRES_PASSWORD'] %>
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default
+```
+
+4 - Mudar o nome das pastas no arquivo docker-compose.yml, [ pasta com o nome da sua aplicação ]/docker/nginx.dockerfile por exemplo:
 o nome da pasta do meu app é railsapp-name, então vou modificar de sispict para railsapp-name.
 
 ```dockerfile
@@ -183,7 +209,7 @@ sudo chown -R $USER:$USER .
 Você precisa agora configura o **config/database.yml**
 
 
-```
+```yml
 default: &default
   adapter: postgresql
   encoding: unicode
