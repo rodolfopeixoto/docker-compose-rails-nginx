@@ -201,7 +201,7 @@ Caso, você deseje iniciar um projeto do zero, basta seguir os passos abaixo:
 3 - Agora vamos construir um container para gerarmos os arquivos. Onde está rails-app-name, você deve trocar para o nome que você renomeou.
 
 ```
-docker-compose run app1 rails new ./rails-app-name --force --database=postgresql
+docker-compose run app1 rails new rails-app-name --force --database=postgresql
 ```
 
 Agora você precisa dar permissão, pois quando você cria algo via comando container, você deve rodar esse comando:
