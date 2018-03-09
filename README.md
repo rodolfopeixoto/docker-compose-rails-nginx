@@ -24,6 +24,7 @@ Caso você queira containerizar um app rails já existente, você deve seguir os
 
 1 - Copiar da pasta rails-app-name a pasta docker e copiar o config/puma.rb para o seu arquivo existente. Lembre-se de substituir o já existe.
 
+
 2 - Criar um **.env** na raiz, onde fica o docker-compose.yml; Você poderá mudar entre environment: production, development e test
 
 ```
@@ -31,6 +32,7 @@ RAILS_ENV=production
 RAILS_SECRET_KEY_BASE=
 DEVISE_SECRET_KEY=
 ```
+
 
 3 - Modificar o arquivo config/database.yml
 
