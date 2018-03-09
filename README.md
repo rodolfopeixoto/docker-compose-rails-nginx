@@ -24,11 +24,19 @@ Caso você queira containerizar um app rails já existente, você deve seguir os
 
 1 - Copiar da pasta rails-app-name a pasta docker e copiar o config/puma.rb para o seu arquivo existente. Lembre-se de substituir o já existe.
 
-2 - Mudar o nome das pastas no arquivo docker-compose.yml, [ pasta com o nome da sua aplicação ]/docker/nginx.dockerfile por exemplo:
+2 - Criar um **.env** na raiz, onde fica o docker-compose.yml; Você poderá mudar entre environment: production, development e test
+
+```
+RAILS_ENV=production
+RAILS_SECRET_KEY_BASE=
+DEVISE_SECRET_KEY=
+```
+
+3 - Mudar o nome das pastas no arquivo docker-compose.yml, [ pasta com o nome da sua aplicação ]/docker/nginx.dockerfile por exemplo:
 o nome da pasta do meu app é railsapp-name, então vou modificar de sispict para railsapp-name.
 
 ```dockerfile
- FROM nginx:latest
+FROM nginx:latest
 ENV RAILS_ROOT /var/www/sispict
 WORKDIR $RAILS_ROOT
 RUN mkdir -p log
@@ -59,7 +67,7 @@ CMD ["-g", "daemon off;"]
 
 Mesma coisa no documento docker/rails.dockerfile de:
 
-```
+```dockerfile
 FROM ruby:2.4-jessie
 
 ENV SECRET_KEY_BASE text
@@ -92,7 +100,7 @@ CMD ["bundle","exec", "puma", "-C", "config/puma.rb"]
 
 PARA
 
-```
+```dockerfile
 FROM ruby:2.4-jessie
 
 ENV SECRET_KEY_BASE text
@@ -144,10 +152,86 @@ Configuração inicial
 
 Clone o repositório e acesse a pasta do projeto, no terminal:
 
+Temos no clone as pastas:
+- rails-app-name
+  - docker
+    - config
+      - puma.rb
+    - nginx.dockerfile
+    - rails.dockerfile
+- docker-compose.yml
+
 Documentação
 ----------------------
 
+Caso, você deseje iniciar um projeto do zero, basta seguir os passos abaixo:
+
+1 - Clone o repositório
+2 - Renomee o rails-app-name para o nome que você deseja para a sua aplicação.
+3 - Agora vamos construir um container para gerarmos os arquivos. Onde está rails-app-name, você deve trocar para o nome que você renomeou.
+
 ```
+docker-compose run app1 rails new ./rails-app-name --force --database=postgresql
+```
+
+Agora você precisa dar permissão, pois quando você cria algo via comando container, você deve rodar esse comando:
+
+```
+sudo chown -R $USER:$USER .
+```
+
+Você precisa agora configura o **config/database.yml**
+
+
+```
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  database: app_database
+  host: postgresql
+  user: <%= ENV['POSTGRES_USER'] %>
+  password: <%= ENV['POSTGRES_PASSWORD'] %>
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default
+```
+Modifique também o seu database.yml pelo arquivo acima.
+
+Caso, você queira só em desenvolvimento, basta modificar .env para development e rodar:
+
+```
+docker-compose up
+```
+
+Caso deseje em production, modifique no .env para production, agora vamos rodar os seguintes comandos:
+
+
+```
+docker-compose run --rm app1 rails secret
+```
+
+Adicione o código retornado no arquivo **.env**.
+
+
+```
+docker-compose run --rm app1 rails db:create && rails assets:precompile
+```
+
+Agora execute o:
+
+```
+docker-compose up
+
+```
+
+
 
 ### Links diretos
 
