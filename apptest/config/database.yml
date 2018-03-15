@@ -1,0 +1,18 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  host: db
+  username: postgresql
+  password: production
+development:
+  <<: *default
+  database: sispict_development
+
+test:
+  <<: *default
+  database: sispict_test
+
+production:
+  <<: *default
+  database: sispict_production

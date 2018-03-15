@@ -1,9 +1,9 @@
-# change sispict to name of the project
+# change apptest to name of the project
 version: '3'
 services:
   nginx:
     build:
-      dockerfile: ./sispict/docker/nginx.dockerfile
+      dockerfile: ./apptest/docker/nginx.dockerfile
       context: .
     container_name: nginx
     ports:
@@ -15,11 +15,11 @@ services:
       - 'app1'
       - 'app2'
       - 'app3'
-  postgresql:
+  db:
     image: postgres
     restart: always
     environment:
-      - POSTGRES_USER=sispict
+      - POSTGRES_USER=postgresql
       - POSTGRES_PASSWORD=production
     volumes:
       - ./postgres:/var/lib/postgresql/data
@@ -29,7 +29,7 @@ services:
       - 'production-network'
   app1:
     build:
-      dockerfile: './sispict/docker/rails.dockerfile'
+      dockerfile: './apptest/docker/rails.dockerfile'
       context: .
     container_name: app1
     environment:
@@ -40,14 +40,14 @@ services:
     ports:
       - 3000
     volumes:
-      - ./sispict:/sispict
+      - ./apptest:/apptest
     networks:
       - 'production-network'
     depends_on:
-      - 'postgresql'
+      - 'db'
   app2:
     build:
-      dockerfile: './sispict/docker/rails.dockerfile'
+      dockerfile: './apptest/docker/rails.dockerfile'
       context: .
     container_name: app2
     environment:
@@ -57,14 +57,14 @@ services:
     ports:
       - 3000
     volumes:
-      - ./sispict:/sispict
+      - ./apptest:/apptest
     networks:
       - 'production-network'
     depends_on:
-      - 'postgresql'
+      - 'db'
   app3:
     build:
-      dockerfile: './sispict/docker/rails.dockerfile'
+      dockerfile: './apptest/docker/rails.dockerfile'
       context: .
     container_name: app3
     environment:
@@ -74,11 +74,11 @@ services:
     ports:
       - 3000
     volumes:
-      - ./sispict:/sispict 
+      - ./apptest:/apptest 
     networks:
       - 'production-network'
     depends_on:
-      - 'postgresql'
+      - 'db'
 networks:
   production-network:
     driver: bridge

@@ -1,0 +1,54 @@
+image: 'ruby:2.4'
+stages:
+  - test
+  - staging
+  - deploy
+services:
+  - postgres:latest
+test:
+  variables:
+    POSTGRES_DB:
+  stage: test
+  script:
+    - apt-get update -qy
+    - apt-get install -y nodejs
+    - bundle install --path /cache
+    - bundle exec rails db:create RAILS_ENV=test
+    - bundle exec rails test
+rspec:
+  stage: test
+  script:
+    - rspec spec
+rubocop:
+  stage: test
+  script:
+    - rubocop
+#https://github.com/chetan/simplecov-console ( add gem )
+brakeman:
+  stage: test
+  script:
+    - bundle exec brakeman -z -q
+rails-best-practices:
+  stage: test
+  script:
+    - rails_best_practices .
+staging:
+  stage: deploy
+  script:
+    - gem install dpl
+    - dpl --provider=heroku --app=testapp-staging --api-key=$HEROKU_STAGING_API_KEY
+  only:
+    - master
+production:
+  stage: deploy
+  before_script:
+    - rm config/database.yml
+    - cp config/database.production.yml config/database.yml
+  script:
+    - which ssh-agent || ( apt-get update -y -qq && apt-get install openssh-client -y -qq )
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$AUTO_DEPLOY_PRIVATE_KEY")
+    - bundle install
+    - bundle exec cap production deploy 
+  only:
+    - deploy
