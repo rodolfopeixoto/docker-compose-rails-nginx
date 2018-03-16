@@ -32,23 +32,22 @@ rails-best-practices:
   stage: test
   script:
     - rails_best_practices .
-staging:
+.jobs_template: &deploy_definition
+  image: tsuru/client
   stage: deploy
-  script:
-    - gem install dpl
-    - dpl --provider=heroku --app=testapp-staging --api-key=$HEROKU_STAGING_API_KEY
+  environment:
+    name: ${DEPLOY_MODE}
+  variables:
+    CI_PROJECT_NAME: 
+staging:
+  <<: *deploy_definition
+  only:
+    - staging
+  variables:
+    DEPLOY_MODE: staging
+production:
   only:
     - master
-production:
-  stage: deploy
-  before_script:
-    - rm config/database.yml
-    - cp config/database.production.yml config/database.yml
-  script:
-    - which ssh-agent || ( apt-get update -y -qq && apt-get install openssh-client -y -qq )
-    - eval $(ssh-agent -s)
-    - ssh-add <(echo "$AUTO_DEPLOY_PRIVATE_KEY")
-    - bundle install
-    - bundle exec cap production deploy 
-  only:
-    - deploy
+  when: manual
+  variables:
+    DEPLOY_MODE: production

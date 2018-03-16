@@ -1,0 +1,6 @@
+hooks:
+  restart:
+    before:
+      - RAILS_ENV=production bundle exec rake assets:precompile
+    after:
+      - RAILS_ENV=production bundle exec rake db:migrate
