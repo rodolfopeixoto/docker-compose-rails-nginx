@@ -1,24 +1,30 @@
-# README
+## RAILS COM GITLAB-CI FOR TSURU
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Para utilizar o gitlab-ci com os stages: test, staging e deploy, você precisará de algumas gems instaladas e configuradas.
 
-Things you may want to cover:
+Requisito:
+  - Rubocop
+  - Simplecov
+  - Rails best practices
+  - brakeman
+  - RSpec
 
-* Ruby version
+Para configurar o rubocop:
 
-* System dependencies
+```
+rubocop --auto-gen-config
+```
 
-* Configuration
+```
+rubocop --auto-correct
+```
 
-* Database creation
+Para configurar o simplecov:
 
-* Database initialization
+No rails_helper.rb adicione o código abaixo
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+```ruby
+require 'simplecov'
+SimpleCov.start
+SimpleCov.formatter = SimpleCov::Formatter::Console
+```
