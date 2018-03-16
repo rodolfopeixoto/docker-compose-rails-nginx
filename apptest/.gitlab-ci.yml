@@ -38,7 +38,7 @@ rails-best-practices:
   environment:
     name: ${DEPLOY_MODE}
   variables:
-    CI_PROJECT_NAME: 
+    CI_PROJECT_NAME: test-app
 staging:
   <<: *deploy_definition
   only:
